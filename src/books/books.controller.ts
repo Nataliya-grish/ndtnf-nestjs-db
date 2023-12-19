@@ -6,16 +6,20 @@ import {
   Param,
   Delete,
   Put,
+  UsePipes,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { BookDocument } from './interfaces/book.schema';
 import { CreateBookDto } from './interfaces/dto/create_book.dto';
+import { validationBookSchema } from '../validation/joi.validation.schema';
+import { BooksValidationPipe } from '../validation/joi.validation.pipe';
 
 
-@Controller('api/book')
+@Controller('books')
 export class BooksController {
   constructor(private readonly bookService: BooksService) {}
-
+	
+  @UsePipes(new BooksValidationPipe(validationBookSchema))
   @Post()
   create(@Body() data: CreateBookDto): Promise<BookDocument> {
     return this.bookService.create(data);
